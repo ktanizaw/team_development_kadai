@@ -19,6 +19,7 @@ class AssignsController < ApplicationController
     redirect_to team_url(params[:team_id]), notice: destroy_message
   end
 
+
   private
 
   def assign_params
@@ -30,6 +31,9 @@ class AssignsController < ApplicationController
       I18n.t('views.messages.cannot_delete_the_leader')
     elsif Assign.where(user_id: assigned_user.id).count == 1
       I18n.t('views.messages.cannot_delete_only_a_member')
+      #Teamに所属しているUserの削除（離脱）は、そのTeamのオーナーか、そのUser自身しかできないようにすること
+    elsif (Assign.where(user_id: assigned_user.id) != current_user.id) && ( current_user.id != assign.team.owner.id )
+      '自分以外のユーザーは削除できません。'
     elsif assign.destroy
       set_next_team(assign, assigned_user)
       I18n.t('views.messages.delete_member')
@@ -37,11 +41,11 @@ class AssignsController < ApplicationController
       I18n.t('views.messages.cannot_delete_member_4_some_reason')
     end
   end
-  
+
   def email_reliable?(address)
     address.match(/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i)
   end
-  
+
   def set_next_team(assign, assigned_user)
     another_team = Assign.find_by(user_id: assigned_user.id).team
     change_keep_team(assigned_user, another_team) if assigned_user.keep_team_id == assign.team_id
