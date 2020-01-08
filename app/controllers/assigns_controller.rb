@@ -31,7 +31,6 @@ class AssignsController < ApplicationController
       I18n.t('views.messages.cannot_delete_the_leader')
     elsif Assign.where(user_id: assigned_user.id).count == 1
       I18n.t('views.messages.cannot_delete_only_a_member')
-      #Teamに所属しているUserの削除（離脱）は、そのTeamのオーナーか、そのUser自身しかできないようにすること
     elsif (Assign.where(user_id: assigned_user.id) != current_user.id) && ( current_user.id != assign.team.owner.id )
       '自分以外のユーザーは削除できません。'
     elsif assign.destroy

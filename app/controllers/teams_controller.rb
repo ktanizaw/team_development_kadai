@@ -16,7 +16,6 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  #TeamのeditはTeamのリーダー（オーナー）のみができるようにすること
   def edit
     if @team.owner.id != current_user.id
     redirect_to team_url, notice: 'チーム情報を編集する権限がありません。'
