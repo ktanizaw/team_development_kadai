@@ -48,9 +48,9 @@ class TeamsController < ApplicationController
   end
 
   def owner_change
-    @user_id = params[:owner_change_user_id]
-    if @team.update(owner_id: @user_id)
-      # binding.irb
+    @user = User.find_by(id: params[:owner_change_user_id])
+    if @team.update(owner: @user)
+      OwnerChangeMailer.owner_change_mail(@user.email).deliver
       redirect_to team_url, notice: 'リーダー権限を移動しました。'
     else
       redirect_to team_url, notice: 'リーダー権限は移動できません。'
