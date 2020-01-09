@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team, only: %i[show edit update destroy owner_change]
+  before_action :ensure_correct_user, only:[:edit, :update]
 
   def index
     @teams = Team.all
@@ -15,7 +16,11 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def edit; end
+  def edit
+    if @team.owner.id != current_user.id
+    redirect_to team_url, notice: 'チーム情報を編集する権限がありません。'
+    end
+  end
 
   def create
     @team = Team.new(team_params)
@@ -58,6 +63,12 @@ class TeamsController < ApplicationController
   end
 
   private
+
+  def ensure_correct_user
+    if @team.owner != current_user
+      flash[:notice] = "権限がありません"
+    end
+  end
 
   def set_team
     @team = Team.friendly.find(params[:id])
