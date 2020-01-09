@@ -1,6 +1,10 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
+<<<<<<< HEAD
   before_action :set_team, only: %i[show edit update destroy owner_change]
+=======
+  before_action :set_team, only: %i[show edit update destroy]
+>>>>>>> 2b41c5da901f7c635c1e2a9bccfd2a6e8314e072
   before_action :ensure_correct_user, only:[:edit, :update]
 
   def index
