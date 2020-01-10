@@ -13,3 +13,11 @@
  *= require_tree .
  *= require_self
  */
+
+/* .btn-sm {
+  z-index: 2;
+}
+
+.nav-link {
+  z-index: 1;
+} */
