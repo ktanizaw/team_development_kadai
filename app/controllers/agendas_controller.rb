@@ -22,15 +22,20 @@ class AgendasController < ApplicationController
   end
 
   def destroy
-    @agenda.destroy
-    redirect_to   team_agendas_path(@agenda.team_id), notice: "アジェンダを削除しました。"
+    @team = Team.find_by(id: @agenda.team_id)
+    if (@agenda.user_id != current_user.id) || (@team.owner_id != current_user.id)
+      redirect_to   team_agendas_path(@agenda.team_id), notice: "権限がありません"
+      # binding.irb
+    else
+      @agenda.destroy
+      redirect_to   team_agendas_path(@agenda.team_id), notice: "アジェンダを削除しました。"
+    end
   end
 
   private
 
   def set_agenda
     @agenda = Agenda.find(params[:id])
-    # binding.irb
   end
 
   def agenda_params
