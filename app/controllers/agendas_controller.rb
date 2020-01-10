@@ -25,10 +25,12 @@ class AgendasController < ApplicationController
     @team = Team.find_by(id: @agenda.team_id)
     if (@agenda.user_id != current_user.id) || (@team.owner_id != current_user.id)
       redirect_to   team_agendas_path(@agenda.team_id), notice: "権限がありません"
-      # binding.irb
     else
       @agenda.destroy
-      redirect_to   team_agendas_path(@agenda.team_id), notice: "アジェンダを削除しました。"
+      @team.assign_users.each do |user|
+          AgendaDestroyMailer.agenda_destroy_mail(user.email).deliver
+        end
+        redirect_to   dashboard_path, notice: "アジェンダを削除しました。"
     end
   end
 
